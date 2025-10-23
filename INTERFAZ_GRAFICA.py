@@ -93,12 +93,12 @@ class Scanner:
 
         lexema += self.caracter_actual()
         self.avanzar()
-        self.ignorar_espacios() 
+        self.ignorar_espacios()
 
         if not self.es_mayuscula(self.caracter_actual()):
             num_error = len(self.errores) + 1
             self.errores.append(ErrorLexico(
-                num_error, lexema, 'Atributo debe comenzar con mayúscula', inicio_fila, inicio_col
+                num_error, lexema, 'Atributo debe comenzar con mayuscula', inicio_fila, inicio_col
             ))
             return None
 
@@ -106,7 +106,7 @@ class Scanner:
             lexema += self.caracter_actual()
             self.avanzar()
 
-        self.ignorar_espacios() 
+        self.ignorar_espacios()
 
         if self.caracter_actual() != '>':
             num_error = len(self.errores) + 1
@@ -143,7 +143,7 @@ class Scanner:
             lexema += self.caracter_actual()
             self.avanzar()
 
-        self.ignorar_espacios() 
+        self.ignorar_espacios()
         if self.caracter_actual() != '>':
             return None
 
@@ -152,7 +152,6 @@ class Scanner:
 
         self.ignorar_espacios()
 
-        # Signo opcional
         if self.caracter_actual() in ['+', '-']:
             lexema += self.caracter_actual()
             self.avanzar()
@@ -162,7 +161,7 @@ class Scanner:
         if not self.es_digito(self.caracter_actual()):
             num_error = len(self.errores) + 1
             self.errores.append(ErrorLexico(
-                num_error, lexema, 'Se esperaba un número', inicio_fila, inicio_col
+                num_error, lexema, 'Se esperaba un numero', inicio_fila, inicio_col
             ))
             return None
 
@@ -176,7 +175,7 @@ class Scanner:
             if not self.es_digito(self.caracter_actual()):
                 num_error = len(self.errores) + 1
                 self.errores.append(ErrorLexico(
-                    num_error, lexema, 'Se esperaban dígitos después del punto', inicio_fila, inicio_col
+                    num_error, lexema, 'Se esperaban digitos despues del punto', inicio_fila, inicio_col
                 ))
                 return None
             while self.es_digito(self.caracter_actual()):
@@ -307,7 +306,7 @@ class Scanner:
                 self.avanzar()
             else:
                 num_error = len(self.errores) + 1
-                self.errores.append(ErrorLexico(num_error, c, 'Carácter no reconocido', self.fila, self.columna))
+                self.errores.append(ErrorLexico(num_error, c, 'Caracter no reconocido', self.fila, self.columna))
                 self.avanzar()
 
         return self.tokens, self.errores
@@ -316,7 +315,7 @@ class Scanner:
 class AnalizadorApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Analizador Léxico")
+        self.root.title("Analizador Lexico")
         self.root.geometry("900x650")
         self.archivo_actual = None
         
@@ -350,7 +349,7 @@ class AnalizadorApp:
         btn_manual_usuario = tk.Button(frame_derecho, text="Manual de Usuario", width=20)
         btn_manual_usuario.pack(pady=5)
         
-        btn_manual_tecnico = tk.Button(frame_derecho, text="Manual Técnico", width=20)
+        btn_manual_tecnico = tk.Button(frame_derecho, text="Manual Tecnico", width=20)
         btn_manual_tecnico.pack(pady=5)
         
         btn_ayuda = tk.Button(frame_derecho, text="Ayuda", width=20, command=self.mostrar_ayuda)
@@ -371,7 +370,7 @@ class AnalizadorApp:
                     self.txt_area.delete(1.0, tk.END)
                     self.txt_area.insert(1.0, contenido)
                     self.archivo_actual = archivo
-                    messagebox.showinfo("Éxito", f"Archivo cargado: {os.path.basename(archivo)}")
+                    messagebox.showinfo("Exito", f"Archivo cargado: {os.path.basename(archivo)}")
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo abrir el archivo:\n{str(e)}")
     
@@ -379,7 +378,7 @@ class AnalizadorApp:
         contenido = self.txt_area.get(1.0, tk.END).strip()
         
         if not contenido:
-            messagebox.showwarning("Advertencia", "No hay código para analizar")
+            messagebox.showwarning("Advertencia", "No hay codigo para analizar")
             return
         
         scanner = Scanner(contenido)
@@ -391,14 +390,14 @@ class AnalizadorApp:
             self.generar_html_errores(errores)
         
         if errores:
-            messagebox.showinfo("Análisis Completo", 
+            messagebox.showinfo("Analisis Completo", 
                               f"Tokens reconocidos: {len(tokens)}\n"
                               f"Errores encontrados: {len(errores)}\n\n"
                               f"Archivos generados:\n- Resultados.html\n- Errores.html")
         else:
-            messagebox.showinfo("Análisis Completo", 
+            messagebox.showinfo("Analisis Completo", 
                               f"Tokens reconocidos: {len(tokens)}\n"
-                              f"Sin errores léxicos\n\n"
+                              f"Sin errores lexicos\n\n"
                               f"Archivo generado: Resultados.html")
     
     def generar_html_resultados(self, tokens):
@@ -406,7 +405,7 @@ class AnalizadorApp:
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Resultados del Análisis</title>
+    <title>Resultados del Analisis</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { text-align: center; }
@@ -459,7 +458,7 @@ class AnalizadorApp:
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Errores Léxicos</title>
+    <title>Errores Lexicos</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { text-align: center; }
@@ -469,7 +468,7 @@ class AnalizadorApp:
     </style>
 </head>
 <body>
-    <h1>Errores Léxicos Detectados</h1>
+    <h1>Errores Lexicos Detectados</h1>
     <table>
         <thead>
             <tr>
@@ -508,7 +507,7 @@ class AnalizadorApp:
         return texto.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
     
     def mostrar_ayuda(self):
-        mensaje = """ANALIZADOR LÉXICO
+        mensaje = """ANALIZADOR LEXICO
 - Gabriel Ajin
 - Velveth Ubedo"""
         
