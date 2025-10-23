@@ -59,16 +59,7 @@ class Scanner:
         while self.caracter_actual() and self.es_espacio(self.caracter_actual()):
             self.avanzar()
 
-    def ignorar_comentario(self):
-        if self.texto[self.posicion:self.posicion + 4] == "<!--":
-            while self.caracter_actual() and self.texto[self.posicion:self.posicion + 3] != "-->":
-                self.avanzar()
-            if self.texto[self.posicion:self.posicion + 3] == "-->":
-                self.posicion += 3
-            return True
-        return False
-
-    def reconocer_etiqueta_apertura_con_atributo(self):
+    def reconocer_etiqueta_apertura(self):
         inicio_fila = self.fila
         inicio_col = self.columna
         lexema = ''
@@ -276,8 +267,6 @@ class Scanner:
             self.ignorar_espacios()
             if self.posicion >= len(self.texto):
                 break
-            if self.ignorar_comentario():
-                continue
             c = self.caracter_actual()
             if c == '<':
                 pos_temp = self.posicion
@@ -290,7 +279,7 @@ class Scanner:
                     continue
 
                 self.posicion, self.fila, self.columna = pos_temp, fila_temp, col_temp
-                token = self.reconocer_etiqueta_apertura_con_atributo()
+                token = self.reconocer_etiqueta_apertura()
                 if token:
                     self.tokens.append(token)
                     continue
@@ -312,7 +301,7 @@ class Scanner:
         return self.tokens, self.errores
 
 
-class AnalizadorApp:
+class Analizador:
     def __init__(self, root):
         self.root = root
         self.root.title("Analizador Lexico")
@@ -384,7 +373,7 @@ class AnalizadorApp:
         scanner = Scanner(contenido)
         tokens, errores = scanner.analizar()
         
-        self.generar_html_resultados(tokens)
+        self.generar_html(tokens)
         
         if errores:
             self.generar_html_errores(errores)
@@ -400,7 +389,7 @@ class AnalizadorApp:
                               f"Sin errores lexicos\n\n"
                               f"Archivo generado: Resultados.html")
     
-    def generar_html_resultados(self, tokens):
+    def generar_html(self, tokens):
         html = """<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -516,5 +505,5 @@ class AnalizadorApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = AnalizadorApp(root)
+    app = Analizador(root)
     root.mainloop()
