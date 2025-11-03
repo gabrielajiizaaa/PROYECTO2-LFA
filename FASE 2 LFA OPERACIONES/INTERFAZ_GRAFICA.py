@@ -351,39 +351,31 @@ class Scanner:
             self.ignorar_espacios()
             if self.posicion >= len(self.texto):
                 break
-            
+
             c = self.caracter_actual()
+
             if c == '<':
-                pos_temp = self.posicion
-                fila_temp = self.fila
-                col_temp = self.columna
+                pos_temp, fila_temp, col_temp = self.posicion, self.fila, self.columna
 
-                token = self.reconocer_etiqueta_operacion()
-                if token:
-                    self.tokens.append(token)
-                    continue
+                
+                reconocedores = [
+                    self.reconocer_etiqueta_operacion,self.reconocer_etiqueta_numero,self.reconocer_etiqueta_p_r,self.reconocer_etiqueta_cierre_operacion
+                ]
 
-                self.posicion, self.fila, self.columna = pos_temp, fila_temp, col_temp
-                token = self.reconocer_etiqueta_numero()
-                if token:
-                    self.tokens.append(token)
-                    continue
+                token_encontrado = False
+                for reconocer in reconocedores:
+                    token = reconocer()
+                    if token:
+                        self.tokens.append(token)
+                        token_encontrado = True
+                        break
+                    self.posicion, self.fila, self.columna = pos_temp, fila_temp, col_temp
+                    
+                if not token_encontrado:
+                    num_error = len(self.errores) + 1
+                    self.errores.append(ErrorLexico(num_error, c, 'Etiqueta mal formada', fila_temp, col_temp))
+                    self.avanzar()
 
-                self.posicion, self.fila, self.columna = pos_temp, fila_temp, col_temp
-                token = self.reconocer_etiqueta_p_r()
-                if token:
-                    self.tokens.append(token)
-                    continue
-
-                self.posicion, self.fila, self.columna = pos_temp, fila_temp, col_temp
-                token = self.reconocer_etiqueta_cierre_operacion()
-                if token:
-                    self.tokens.append(token)
-                    continue
-
-                num_error = len(self.errores) + 1
-                self.errores.append(ErrorLexico(num_error, c, 'Etiqueta mal formada', fila_temp, col_temp))
-                self.avanzar()
             else:
                 num_error = len(self.errores) + 1
                 self.errores.append(ErrorLexico(num_error, c, 'Caracter no reconocido', self.fila, self.columna))
